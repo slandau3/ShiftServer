@@ -22,14 +22,12 @@ public class PCDevice{
     private void listenToDevice() {
         try {
             while (true) {
+                Thread.sleep(10);
                 try {
                     Object received = in.readObject();  // Reading from PC
                     if (received instanceof SendCard) {
                         SendCard sc = (SendCard) received;
-                        String message = sc.getMsg();
-                        String number = sc.getNumber();
-                        String name = sc.getName();
-                        // TODO: Make a function for the mobile device that takes a message and phone number.
+                        sendToMobile(sc);
                     } // TODO: Think of anything else that would be received.
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -50,6 +48,11 @@ public class PCDevice{
         }
     }
 
+    private void sendToMobile(SendCard sc) {
+        for (MobileDevice md : ShiftServer.MobileThreads) {  // I highly doubt there will ever be more than one mobile device.
+            md.sendToMobile(sc);
+        }
+    }
     public void sendToPCClient(SendCard sc) {
         try {
             out.writeObject(sc);
@@ -59,4 +62,5 @@ public class PCDevice{
             System.err.println("Message not sent.");
         }
     }
+
 }
