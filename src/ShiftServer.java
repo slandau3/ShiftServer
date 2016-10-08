@@ -15,6 +15,8 @@ public class ShiftServer {
     private ObjectOutputStream out;
     public static ArrayList<PCDevice> PCThreads = new ArrayList<>();
     public static ArrayList<MobileDevice> MobileThreads = new ArrayList<>();
+
+
     public ShiftServer() {
         try {
             server = new ServerSocket(PORT);
@@ -47,6 +49,6 @@ public class ShiftServer {
     }
 
     public static void main(String[] args) {
-        ShiftServer v = new ShiftServer();
+        new ShiftServer();
     }
 }
