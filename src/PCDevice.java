@@ -41,7 +41,6 @@ public class PCDevice{
                 in.close();
                 out.close();
                 client.close(); // will probably throw an exception because the client is already closed.
-                return; // This class should end once this is returned.
             } catch (IOException e) {
                 e.printStackTrace();
             }

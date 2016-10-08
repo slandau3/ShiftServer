@@ -44,7 +44,6 @@ public class MobileDevice {
                 in.close();
                 out.close();
                 client.close(); // Will probably throw an exception because the client is already closed
-                return;
             } catch (IOException e) {
                 e.printStackTrace(); // If this occurs, delete client.close. The client is already (forcibly) closed when here.
             }
