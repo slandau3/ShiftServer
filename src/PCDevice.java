@@ -44,6 +44,7 @@ public class PCDevice{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            System.out.println("PC closed");
         }
     }
 
