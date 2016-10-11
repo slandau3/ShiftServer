@@ -1,3 +1,5 @@
+import edu.rit.cs.steven_landau.shiftmobile.SendCard;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

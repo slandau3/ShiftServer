@@ -1,3 +1,5 @@
+import edu.rit.cs.steven_landau.shiftmobile.SendCard;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,8 +27,11 @@ public class MobileDevice {
                 Thread.sleep(10);
                 try {
                     Object received = in.readObject();
+                    System.out.println(received.getClass());
+                    SendCard sc = (SendCard) received;
+                    System.out.println("HERE HERE");
                     if (received instanceof SendCard) {
-                        SendCard sc = (SendCard) received;
+                        //SendCard sc = (SendCard) received;
                         sendToPC(sc);
                     }
                     // TODO: brainstorm a few more objects

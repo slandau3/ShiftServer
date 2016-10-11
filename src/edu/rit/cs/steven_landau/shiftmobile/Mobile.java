@@ -1,3 +1,5 @@
+package edu.rit.cs.steven_landau.shiftmobile;
+
 import java.io.Serializable;
 
 /**

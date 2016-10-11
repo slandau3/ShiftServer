@@ -1,3 +1,5 @@
+import edu.rit.cs.steven_landau.shiftmobile.Mobile;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,26 +13,26 @@ import java.util.ArrayList;
 public class ShiftServer {
     public static final int PORT = 8012;
     private ServerSocket server;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
     public static ArrayList<PCDevice> PCThreads = new ArrayList<>();
     public static ArrayList<MobileDevice> MobileThreads = new ArrayList<>();
 
 
     public ShiftServer() {
         try {
-            server = new ServerSocket(PORT);
+            server = new ServerSocket(PORT, 5);
+            System.out.println(server.getInetAddress().getLocalHost());
             while (true) {
                 try {
                     Socket client = server.accept();
-                    out = new ObjectOutputStream(client.getOutputStream());
+                    System.out.println("connected to " + client.getInetAddress().getHostName());
+                    ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
                     out.flush();
-                    in = new ObjectInputStream(client.getInputStream());
+                    ObjectInputStream in = new ObjectInputStream(client.getInputStream());
                     Object device = in.readObject();
                     if (device instanceof PC) {
 
                         new Thread(() -> {
-                            PCThreads.add(new PCDevice(client, in, out));  // How will rewriting out and in affect this class once it is initiated?
+                            PCThreads.add(new PCDevice(client, in, out));
                         }).start();
 
                     } else if (device instanceof Mobile) {
