@@ -1,5 +1,6 @@
 import edu.rit.cs.steven_landau.shiftmobile.SendCard;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,6 +19,8 @@ public class MobileDevice {
         this.client = client;
         this.in = in;
         this.out = out;
+        System.out.println("creating new mobile device");
+        ShiftServer.MobileThreads.add(this);
         listenToDevice();
     }
 
@@ -27,11 +30,9 @@ public class MobileDevice {
                 Thread.sleep(10);
                 try {
                     Object received = in.readObject();
-                    System.out.println(received.getClass());
-                    SendCard sc = (SendCard) received;
-                    System.out.println("HERE HERE");
+                    System.out.println("object received from mobile");
                     if (received instanceof SendCard) {
-                        //SendCard sc = (SendCard) received;
+                        SendCard sc = (SendCard) received;
                         sendToPC(sc);
                     }
                     // TODO: brainstorm a few more objects
@@ -41,8 +42,12 @@ public class MobileDevice {
             }
 
 
-        } catch (Exception e) {
+        } catch (EOFException eofe) {
+            ShiftServer.MobileThreads.remove(this);
+        }
+        catch (Exception e) {
             // App probably shut down.
+            e.printStackTrace();
             ShiftServer.MobileThreads.remove(this); // Keep an eye on this.
         } finally {
             try {
@@ -66,6 +71,7 @@ public class MobileDevice {
         try {
             out.writeObject(sc);
             out.flush();
+            System.out.println("message sent to mobile");
         } catch (IOException e) {
             e.printStackTrace();  // Mobile device not online?
         }

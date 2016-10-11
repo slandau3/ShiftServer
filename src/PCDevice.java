@@ -18,6 +18,7 @@ public class PCDevice{
         this.client = client;
         this.in = in;
         this.out = out;
+        ShiftServer.PCThreads.add(this);
         listenToDevice();
     }
 
@@ -28,6 +29,7 @@ public class PCDevice{
                 try {
                     Object received = in.readObject();  // Reading from PC
                     if (received instanceof SendCard) {
+                        System.out.println("received from pc");
                         SendCard sc = (SendCard) received;
                         sendToMobile(sc);
                     } // TODO: Think of anything else that would be received.
@@ -53,12 +55,14 @@ public class PCDevice{
     private void sendToMobile(SendCard sc) {
         for (MobileDevice md : ShiftServer.MobileThreads) {  // I highly doubt there will ever be more than one mobile device.
             md.sendToMobile(sc);
+            System.out.println("sent from pc to mobile");
         }
     }
     public void sendToPCClient(SendCard sc) {
         try {
             out.writeObject(sc);
             out.flush();
+            System.out.println("sent to pc");
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Message not sent.");

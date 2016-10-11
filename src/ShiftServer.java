@@ -30,23 +30,35 @@ public class ShiftServer {
                     ObjectInputStream in = new ObjectInputStream(client.getInputStream());
                     Object device = in.readObject();
                     if (device instanceof PC) {
-
+                        System.out.println("about to start a new pc device");
                         new Thread(() -> {
-                            PCThreads.add(new PCDevice(client, in, out));
+                            new PCDevice(client, in, out);
                         }).start();
 
                     } else if (device instanceof Mobile) {
+                        System.out.println("about to start a new Mobile device");
                         new Thread(() -> {
-                            MobileThreads.add(new MobileDevice(client, in, out));
+                            new MobileDevice(client, in, out);
                         }).start();
                     }
+                    Thread.sleep(100);
+                    System.out.println(PCThreads);
+                    System.out.println(MobileThreads);
 
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();  // Client configured incorrectly
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                server.close();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
         }
     }
 
