@@ -19,6 +19,7 @@ public class PCDevice{
         this.in = in;
         this.out = out;
         ShiftServer.PCThreads.add(this);
+        sendToPCClient(ShiftServer.usc.getConversations()); // Send an arrayList containing the current contact info
         listenToDevice();
     }
 
@@ -28,14 +29,11 @@ public class PCDevice{
                 Thread.sleep(10);
                 try {
                     Object received = in.readObject();  // Reading from PC
+                    // TODO: Think of anything else that would be received.
                     if (received instanceof SendCard) {
-                        System.out.println("received from pc");
-                        SendCard sc = (SendCard) received;
-                        sendToMobile(sc);
-                    } // TODO: Think of anything else that would be received.
-                    else if (received instanceof SendCard) {
                         SendCard sc = (SendCard) received;
                         ShiftServer.usc.updateConversation(sc);
+                        sendToMobile(sc);
                         // TODO: get the new conversations and send it to the client
                     }
                 } catch (ClassNotFoundException e) {

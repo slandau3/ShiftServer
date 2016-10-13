@@ -2,6 +2,7 @@ import edu.rit.cs.steven_landau.shiftmobile.RetrievedContacts;
 import edu.rit.cs.steven_landau.shiftmobile.SendCard;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -97,18 +98,25 @@ public class UpdateStoredContacts {
 
 
     public synchronized void updateConversation(SendCard sc) {  // TODO: rewrite these methods to work with SendCard
-        if (conversations.contains(c)) {
-            int index = conversations.indexOf(c);
+        ArrayList<String> tempMsg = new ArrayList<>();
+        tempMsg.add(sc.getMsg());
+        Contact temp = new Contact(sc.getName(), sc.getNumber(), tempMsg);
+        if (conversations.contains(temp)) {
+            int index = conversations.indexOf(temp);
+            conversations.get(index).addMessage(temp.getMostRecentMessage());
+            Contact c = conversations.get(index);
             conversations.remove(index);
             conversations.add(0, c);  // Add the updated contact to the front of the ArrayList
         } else {
-            conversations.add(0, c);
+            conversations.add(temp);
         }
 
         new Thread(this::updateStored).start();
     }
 
-    public synchronized void removeConversation(SendCard sc) {
+    public synchronized void removeConversation(SendCard sc) {  // This should probably stick with a contact
+        ArrayList<String> tempMsg = new ArrayList<>();
+        Contact c = new Contact(sc.getName(), sc.getNumber(), tempMsg);
         if (conversations.contains(c)) {
             conversations.remove(c);
             new Thread(this::updateStored).start();
