@@ -19,7 +19,7 @@ public class PCDevice{
         this.in = in;
         this.out = out;
         ShiftServer.PCThreads.add(this);
-        sendToPCClient(ShiftServer.usc.getConversations()); // Send an arrayList containing the current contact info
+        sendToPCClient(new ConversationHolder(ShiftServer.usc.getConversations())); // Send an arrayList containing the current contact info
         listenToDevice();
     }
 
@@ -32,6 +32,9 @@ public class PCDevice{
                     // TODO: Think of anything else that would be received.
                     if (received instanceof SendCard) {
                         SendCard sc = (SendCard) received;
+                        new Thread(() -> {
+                            ShiftServer.usc.updateConversation(new SendCard("--Client--:" + sc.getMsg(), sc.getNumber(), sc.getName()));
+                        }).start();
                         ShiftServer.usc.updateConversation(sc);
                         sendToMobile(sc);
                         // TODO: get the new conversations and send it to the client

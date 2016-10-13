@@ -34,12 +34,17 @@ public class MobileDevice {
                     System.out.println("object received from mobile");
                     if (received instanceof SendCard) {
                         SendCard sc = (SendCard) received;
+                        new Thread(() -> {
+                            ShiftServer.usc.updateConversation(sc);
+                        }).start();
                         sendToPC(sc);
                     }
                     // TODO: brainstorm a few more objects
                     else if (received instanceof RetrievedContacts) {
                         RetrievedContacts rc = (RetrievedContacts) received;
-                        ShiftServer.usrc.updateEntries(rc);
+                        new Thread(() -> {
+                            ShiftServer.usrc.updateEntries(rc);
+                        }).start();
                         sendToPC(rc);
                     }
                 } catch (ClassNotFoundException e) {
