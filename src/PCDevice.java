@@ -33,6 +33,11 @@ public class PCDevice{
                         SendCard sc = (SendCard) received;
                         sendToMobile(sc);
                     } // TODO: Think of anything else that would be received.
+                    else if (received instanceof SendCard) {
+                        SendCard sc = (SendCard) received;
+                        ShiftServer.usc.updateConversation(sc);
+                        // TODO: get the new conversations and send it to the client
+                    }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -52,15 +57,15 @@ public class PCDevice{
         }
     }
 
-    private void sendToMobile(SendCard sc) {
+    private void sendToMobile(Object o) {
         for (MobileDevice md : ShiftServer.MobileThreads) {  // I highly doubt there will ever be more than one mobile device.
-            md.sendToMobile(sc);
+            md.sendToMobile(o);
             System.out.println("sent from pc to mobile");
         }
     }
-    public void sendToPCClient(SendCard sc) {
+    public void sendToPCClient(Object o) {
         try {
-            out.writeObject(sc);
+            out.writeObject(o);
             out.flush();
             System.out.println("sent to pc");
         } catch (IOException e) {

@@ -15,7 +15,8 @@ public class ShiftServer {
     private ServerSocket server;
     public static ArrayList<PCDevice> PCThreads = new ArrayList<>();
     public static ArrayList<MobileDevice> MobileThreads = new ArrayList<>();
-
+    public static UpdateStoredContacts usc = new UpdateStoredContacts();
+    public static UpdateStoredRetrievedContacts usrc = new UpdateStoredRetrievedContacts();
 
     public ShiftServer() {
         try {

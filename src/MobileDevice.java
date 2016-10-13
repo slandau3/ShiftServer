@@ -1,3 +1,4 @@
+import edu.rit.cs.steven_landau.shiftmobile.RetrievedContacts;
 import edu.rit.cs.steven_landau.shiftmobile.SendCard;
 
 import java.io.EOFException;
@@ -36,6 +37,11 @@ public class MobileDevice {
                         sendToPC(sc);
                     }
                     // TODO: brainstorm a few more objects
+                    else if (received instanceof RetrievedContacts) {
+                        RetrievedContacts rc = (RetrievedContacts) received;
+                        ShiftServer.usrc.updateEntries(rc);
+                        sendToPC(rc);
+                    }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -61,15 +67,15 @@ public class MobileDevice {
     }
 
 
-    private void sendToPC(SendCard sc) {
+    private void sendToPC(Object o) {
         for (PCDevice pcd : ShiftServer.PCThreads) {   // Will it really be this simple?
-            pcd.sendToPCClient(sc);
+            pcd.sendToPCClient(o);
         }
     }
 
-    public void sendToMobile(SendCard sc) {
+    public void sendToMobile(Object o) {
         try {
-            out.writeObject(sc);
+            out.writeObject(o);
             out.flush();
             System.out.println("message sent to mobile");
         } catch (IOException e) {
