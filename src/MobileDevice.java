@@ -45,6 +45,12 @@ public class MobileDevice {
                         new Thread(() -> {
                             ShiftServer.usrc.updateEntries(rc);
                         }).start();
+                        try {
+                            System.out.println(rc.cc);
+                            System.out.println(rc.cc.size());
+                        } catch (Exception e) {
+                            // none
+                        }
                         sendToPC(rc);
                     }
                 } catch (ClassNotFoundException e) {
@@ -55,11 +61,13 @@ public class MobileDevice {
 
         } catch (EOFException eofe) {
             ShiftServer.MobileThreads.remove(this);
+            System.out.println("mobile device closed");
         }
         catch (Exception e) {
             // App probably shut down.
             e.printStackTrace();
             ShiftServer.MobileThreads.remove(this); // Keep an eye on this.
+            System.out.println("mobile device closed");
         } finally {
             try {
                 in.close();

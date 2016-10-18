@@ -1,3 +1,4 @@
+import edu.rit.cs.steven_landau.shiftmobile.RetrievedContacts;
 import edu.rit.cs.steven_landau.shiftmobile.SendCard;
 
 import java.io.IOException;
@@ -20,6 +21,8 @@ public class PCDevice{
         this.out = out;
         ShiftServer.PCThreads.add(this);
         sendToPCClient(new ConversationHolder(ShiftServer.usc.getConversations())); // Send an arrayList containing the current contact info
+        sendToPCClient(ShiftServer.usrc.getEntries());
+        System.out.println(ShiftServer.usrc.getEntries());
         listenToDevice();
     }
 
@@ -33,11 +36,11 @@ public class PCDevice{
                     if (received instanceof SendCard) {
                         SendCard sc = (SendCard) received;
                         new Thread(() -> {
-                            ShiftServer.usc.updateConversation(new SendCard("--Client--:" + sc.getMsg(), sc.getNumber(), sc.getName()));
+                            ShiftServer.usc.updateConversation(new SendCard("--Client--: " + sc.getMsg(), sc.getNumber(), sc.getName()));
                         }).start();
-                        ShiftServer.usc.updateConversation(sc);
                         sendToMobile(sc);
-                        // TODO: get the new conversations and send it to the client
+                    } else if (received instanceof ClearRequest) {
+                        ShiftServer.usc.deleteEverything();
                     }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();

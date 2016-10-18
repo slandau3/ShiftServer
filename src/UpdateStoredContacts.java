@@ -17,7 +17,7 @@ import java.util.zip.InflaterInputStream;
 public class UpdateStoredContacts {
     public static ObjectInputStream ois = null;
     public static ObjectOutputStream oos = null;
-    private static ArrayList<Contact> conversations;
+    private static ArrayList<Contact> conversations = new ArrayList<>();
 
 
     public UpdateStoredContacts() {
@@ -120,6 +120,17 @@ public class UpdateStoredContacts {
         if (conversations.contains(c)) {
             conversations.remove(c);
             new Thread(this::updateStored).start();
+        }
+    }
+
+    public synchronized void deleteEverything() {
+        try {
+            oos = new ObjectOutputStream(new FileOutputStream(new File("StoredContacts.ser")));
+            oos.flush();
+            oos.close();
+            oos = null;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

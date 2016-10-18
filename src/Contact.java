@@ -17,7 +17,11 @@ public class Contact implements Serializable {
 
     public Contact(String name, String phoneNumber, ArrayList<String> messages) {
         this.name = name;
-        this.messages = messages;
+        if (messages != null) {
+            this.messages = messages;
+        } else {
+            this.messages = new ArrayList<>();
+        }
         this.phoneNumber = phoneNumber;
     }
 
