@@ -10,9 +10,9 @@ import java.util.ArrayList;
  * I will rename this file at some point.
  */
 public class UpdateStoredRetrievedContacts {
-    private static ObjectOutputStream oos = null;
-    private static ObjectInputStream ois = null;
-    private static RetrievedContacts entries;
+    private ObjectOutputStream oos = null;
+    private ObjectInputStream ois = null;
+    private RetrievedContacts entries;
 
     private static final String filename = "StoredRetrievedContacts.ser";
 
@@ -97,5 +97,28 @@ public class UpdateStoredRetrievedContacts {
 
     public RetrievedContacts getEntries() {
         return entries;
+    }
+
+
+    public void closeAll() {
+        if (oos != null) {
+            try {
+                oos.flush();
+                oos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                oos = null;
+            }
+        }
+        if (ois != null) {
+            try {
+                ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                ois = null;
+            }
+        }
     }
 }

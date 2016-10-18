@@ -15,23 +15,23 @@ import java.util.zip.InflaterInputStream;
  * Need to decide if I want to make everything in this class static. I'll leave it instanced for now.
  */
 public class UpdateStoredContacts {
-    public static ObjectInputStream ois = null;
-    public static ObjectOutputStream oos = null;
-    private static ArrayList<Contact> conversations = new ArrayList<>();
-
+    public ObjectInputStream ois = null;
+    public ObjectOutputStream oos = null;
+    private ArrayList<Contact> conversations = new ArrayList<>();
+    private static final String filename = "StoredContacts.ser";
 
     public UpdateStoredContacts() {
         try {
-            ois = new ObjectInputStream(new FileInputStream(new File("StoredContacts.ser")));
+            ois = new ObjectInputStream(new FileInputStream(new File(filename)));
             fillConversation();
         } catch (IOException e) {
             e.printStackTrace(); // File is not set up correctly or does not exist. Must recreate it.
             try {
-                oos = new ObjectOutputStream(new FileOutputStream(new File("StoredContacts.ser")));
+                oos = new ObjectOutputStream(new FileOutputStream(new File(filename)));
                 oos.flush();
                 oos.close();
                 oos = null;
-                ois = new ObjectInputStream(new FileInputStream(new File("StoredContacts.ser")));
+                ois = new ObjectInputStream(new FileInputStream(new File(filename)));
                 fillConversation();
             } catch (IOException e1) {
                 e1.printStackTrace();
@@ -42,7 +42,7 @@ public class UpdateStoredContacts {
     private synchronized void fillConversation() {
         if (ois == null) {
             try {
-                ois = new ObjectInputStream(new FileInputStream(new File("StoredContacts.ser")));
+                ois = new ObjectInputStream(new FileInputStream(new File(filename)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -81,7 +81,7 @@ public class UpdateStoredContacts {
                 ois.close();
                 ois = null;
             }
-            oos = new ObjectOutputStream(new FileOutputStream(new File("StoredContacts.ser")));
+            oos = new ObjectOutputStream(new FileOutputStream(new File(filename)));
             oos.writeObject(conversations);
             oos.flush();
         } catch (IOException e) {
@@ -125,7 +125,7 @@ public class UpdateStoredContacts {
 
     public synchronized void deleteEverything() {
         try {
-            oos = new ObjectOutputStream(new FileOutputStream(new File("StoredContacts.ser")));
+            oos = new ObjectOutputStream(new FileOutputStream(new File(filename)));
             oos.flush();
             oos.close();
             oos = null;
@@ -136,5 +136,28 @@ public class UpdateStoredContacts {
 
     public ArrayList<Contact> getConversations() {
         return conversations;
+    }
+
+
+    public void closeAll() {
+        if (oos != null) {
+            try {
+                oos.flush();
+                oos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                oos = null;
+            }
+        }
+        if (ois != null) {
+            try {
+                ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                ois = null;
+            }
+        }
     }
 }

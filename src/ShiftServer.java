@@ -37,10 +37,12 @@ public class ShiftServer {
                         }).start();
 
                     } else if (device instanceof Mobile) {
-                        System.out.println("about to start a new Mobile device");
-                        new Thread(() -> {
-                            new MobileDevice(client, in, out);
-                        }).start();
+                        if (MobileThreads.size() == 0) {
+                            System.out.println("about to start a new Mobile device");
+                            new Thread(() -> {
+                                new MobileDevice(client, in, out);
+                            }).start();
+                        }
                     }
                     Thread.sleep(100);
                     System.out.println(PCThreads);
@@ -56,6 +58,8 @@ public class ShiftServer {
             e.printStackTrace();
         } finally {
             try {
+                usc.closeAll();
+                usrc.closeAll();
                 server.close();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
