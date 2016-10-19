@@ -22,6 +22,8 @@ public class MobileDevice {
         this.out = out;
         System.out.println("creating new mobile device");
         ShiftServer.MobileThreads.add(this);
+        sendToPC(new ConnectedToMobile(true));
+        ShiftServer.isConnectedToMobile = true;
         listenToDevice();
     }
 
@@ -31,7 +33,7 @@ public class MobileDevice {
                 Thread.sleep(10);
                 try {
                     Object received = in.readObject();
-                    System.out.println("object received from mobile");
+                    //System.out.println("object received from mobile");
                     if (received instanceof SendCard) {
                         SendCard sc = (SendCard) received;
                         new Thread(() -> {
@@ -45,12 +47,12 @@ public class MobileDevice {
                         new Thread(() -> {
                             ShiftServer.usrc.updateEntries(rc);
                         }).start();
-                        try {
+                        /*try {
                             System.out.println(rc.cc);
                             System.out.println(rc.cc.size());
                         } catch (Exception e) {
                             // none
-                        }
+                        }*/
                         sendToPC(rc);
                     }
                 } catch (ClassNotFoundException e) {
@@ -59,13 +61,11 @@ public class MobileDevice {
             }
 
 
-        } catch (EOFException eofe) {
-            ShiftServer.MobileThreads.remove(this);
-            System.out.println("mobile device closed");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // App probably shut down.
             e.printStackTrace();
+            sendToPC(new ConnectedToMobile(false));
+            ShiftServer.isConnectedToMobile = false;
             ShiftServer.MobileThreads.remove(this); // Keep an eye on this.
             System.out.println("mobile device closed");
         } finally {

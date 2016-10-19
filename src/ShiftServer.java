@@ -17,6 +17,7 @@ public class ShiftServer {
     public static ArrayList<MobileDevice> MobileThreads = new ArrayList<>();
     public static UpdateStoredContacts usc = new UpdateStoredContacts();
     public static UpdateStoredRetrievedContacts usrc = new UpdateStoredRetrievedContacts();
+    public static boolean isConnectedToMobile = false;
 
     public ShiftServer() {
         try {

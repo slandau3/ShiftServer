@@ -23,6 +23,7 @@ public class PCDevice{
         sendToPCClient(new ConversationHolder(ShiftServer.usc.getConversations())); // Send an arrayList containing the current contact info
         sendToPCClient(ShiftServer.usrc.getEntries());
         System.out.println(ShiftServer.usrc.getEntries());
+        sendToPCClient(new ConnectedToMobile(ShiftServer.isConnectedToMobile));
         listenToDevice();
     }
 
