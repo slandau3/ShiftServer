@@ -114,9 +114,7 @@ public class UpdateStoredContacts {
         new Thread(this::updateStored).start();
     }
 
-    public synchronized void removeConversation(SendCard sc) {  // This should probably stick with a contact
-        ArrayList<String> tempMsg = new ArrayList<>();
-        Contact c = new Contact(sc.getName(), sc.getNumber(), tempMsg);
+    public synchronized void removeConversation(Contact c) {  // This should probably stick with a contact
         if (conversations.contains(c)) {
             conversations.remove(c);
             new Thread(this::updateStored).start();

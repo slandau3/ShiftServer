@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class UpdateStoredRetrievedContacts {
     private ObjectOutputStream oos = null;
     private ObjectInputStream ois = null;
-    private RetrievedContacts entries;
+    private RetrievedContacts entries = new RetrievedContacts(new ArrayList<ContactCard>());
 
     private static final String filename = "StoredRetrievedContacts.ser";
 

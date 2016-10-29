@@ -30,10 +30,10 @@ public class MobileDevice {
     private void listenToDevice() {
         try {
             while (true) {
-                Thread.sleep(10);
+                Thread.sleep(100);
                 try {
                     Object received = in.readObject();
-                    //System.out.println("object received from mobile");
+                    System.out.println("object received from mobile");
                     if (received instanceof SendCard) {
                         SendCard sc = (SendCard) received;
                         new Thread(() -> {
@@ -43,10 +43,12 @@ public class MobileDevice {
                     }
                     // TODO: brainstorm a few more objects
                     else if (received instanceof RetrievedContacts) {
+                        System.out.println("received contacts");
                         RetrievedContacts rc = (RetrievedContacts) received;
                         new Thread(() -> {
                             ShiftServer.usrc.updateEntries(rc);
                         }).start();
+                        System.out.println(rc.cc);
                         /*try {
                             System.out.println(rc.cc);
                             System.out.println(rc.cc.size());
@@ -64,19 +66,19 @@ public class MobileDevice {
         } catch (Exception e) {
             // App probably shut down.
             e.printStackTrace();
-            sendToPC(new ConnectedToMobile(false));
-            ShiftServer.isConnectedToMobile = false;
-            ShiftServer.MobileThreads.remove(this); // Keep an eye on this.
-            System.out.println("mobile device closed");
         } finally {
             try {
                 in.close();
                 out.close();
                 client.close(); // Will probably throw an exception because the client is already closed
+                ShiftServer.isConnectedToMobile = false;
+                sendToPC(new ConnectedToMobile(false));
+                ShiftServer.MobileThreads.remove(this);
             } catch (IOException e) {
                 e.printStackTrace(); // If this occurs, delete client.close. The client is already (forcibly) closed when here.
             }
         }
+        System.out.println("closed mobile");
     }
 
 

@@ -1,5 +1,6 @@
 import edu.rit.cs.steven_landau.shiftmobile.Mobile;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -27,9 +28,10 @@ public class ShiftServer {
                 try {
                     Socket client = server.accept();
                     System.out.println("connected to " + client.getInetAddress().getHostName());
+                    ObjectInputStream in = new ObjectInputStream(client.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
                     out.flush();
-                    ObjectInputStream in = new ObjectInputStream(client.getInputStream());
+                    
                     Object device = in.readObject();
                     if (device instanceof PC) {
                         System.out.println("about to start a new pc device");
@@ -49,10 +51,8 @@ public class ShiftServer {
                     System.out.println(PCThreads);
                     System.out.println(MobileThreads);
 
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException | EOFException | InterruptedException e) {
                     e.printStackTrace();  // Client configured incorrectly
-                } catch (InterruptedException ie) {
-                    ie.printStackTrace();
                 }
             }
         } catch (IOException e) {
